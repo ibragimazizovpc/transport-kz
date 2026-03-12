@@ -783,4 +783,3 @@ def update(ad_id):
     return redirect(f"/car/{ad_id}")
 
 
-app.run(debug=True)
