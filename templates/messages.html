@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сообщения</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <h1>transport.kz</h1>
+
+    <div>
+        <a href="/" class="edit-btn">Главная</a>
+        <a href="/my_ads" class="edit-btn">Мои объявления</a>
+        <a href="/favorites" class="edit-btn">Избранное</a>
+        <a href="/messages" class="edit-btn">Сообщения</a>
+        <a href="/profile/{{ user_id }}" class="edit-btn">Профиль</a>
+        <a href="/logout" class="edit-btn">Выйти</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="form-box">
+        <h2>Мои сообщения</h2>
+
+        {% if chats %}
+            {% for chat in chats %}
+                <a href="/chat/{{ chat.ad_id }}/{{ chat.other_user_id }}" class="chat-item">
+                    <div class="chat-card">
+                        <h3 style="margin: 0 0 8px 0;">{{ chat.ad_title }}</h3>
+                        <p style="margin: 0;">Собеседник: {{ chat.other_user_name }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <div class="empty">Сообщений пока нет</div>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>

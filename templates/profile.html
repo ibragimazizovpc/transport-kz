@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Профиль</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <h1>transport.kz</h1>
+    <div>
+        <a href="/" class="edit-btn">Главная</a>
+        {% if current_user_id %}
+            <a href="/my_ads" class="edit-btn">Мои объявления</a>
+            <a href="/favorites" class="edit-btn">Избранное</a>
+            <a href="/messages" class="edit-btn">Сообщения</a>
+            <a href="/profile/{{ current_user_id }}" class="edit-btn">Профиль</a>
+            <a href="/logout" class="edit-btn">Выйти</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="form-box">
+        <div class="profile-top">
+            {% if user.avatar %}
+                <img src="/static/avatars/{{ user.avatar }}" class="profile-avatar" alt="{{ user.username }}">
+            {% else %}
+                <img src="/static/no-image.png" class="profile-avatar" alt="{{ user.username }}">
+            {% endif %}
+
+            <div>
+                <div class="profile-name">{{ user.username }}</div>
+                <p style="margin-top: 10px;">Профиль пользователя transport.kz</p>
+            </div>
+        </div>
+    </div>
+
+    {% if current_user_id == user.id %}
+    <div class="form-box">
+        <h2>Загрузить аватарку</h2>
+        <form action="/upload_avatar" method="post" enctype="multipart/form-data">
+            <input type="file" name="avatar" required>
+            <button type="submit">Загрузить аватар</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="form-box">
+        <h2>Объявления пользователя</h2>
+
+        {% if ads %}
+        <div class="profile-ads-grid">
+            {% for ad in ads %}
+            <a href="/car/{{ ad.id }}" class="card-link">
+                <div class="card">
+                    {% if ad.first_image %}
+                        <img src="/static/images/{{ ad.first_image }}" alt="{{ ad.title }}">
+                    {% else %}
+                        <img src="/static/no-image.png" alt="{{ ad.title }}">
+                    {% endif %}
+                    <div class="card-content">
+                        <h3>{{ ad.title }}</h3>
+                        <div class="price">{{ ad.price }} ₸</div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">У пользователя пока нет объявлений</div>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>

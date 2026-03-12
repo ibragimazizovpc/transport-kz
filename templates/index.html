@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>transport.kz</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <h1>transport.kz</h1>
+
+    <div>
+        {% if username %}
+            <p style="margin: 0 10px 0 0;">Вы вошли как: <strong>{{ username }}</strong></p>
+            <a href="/" class="edit-btn">Главная</a>
+            <a href="/my_ads" class="edit-btn">Мои объявления</a>
+            <a href="/favorites" class="edit-btn">Избранное</a>
+            <a href="/messages" class="edit-btn">Сообщения</a>
+            <a href="/profile/{{ user_id }}" class="edit-btn">Профиль</a>
+            {% if is_admin %}
+                <a href="/admin" class="edit-btn">Админка</a>
+            {% endif %}
+            <a href="/logout" class="edit-btn">Выйти</a>
+        {% else %}
+            <a href="/login" class="edit-btn">Войти</a>
+            <a href="/register" class="edit-btn">Регистрация</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="form-box">
+        <h2>Поиск и фильтры</h2>
+        <form action="/" method="get">
+            <input type="text" name="search" placeholder="Название машины" value="{{ search }}">
+            <input type="text" name="city" placeholder="Город" value="{{ city }}">
+            <input type="number" name="price_min" placeholder="Цена от" value="{{ price_min }}">
+            <input type="number" name="price_max" placeholder="Цена до" value="{{ price_max }}">
+            <input type="number" name="year_min" placeholder="Год от" value="{{ year_min }}">
+            <input type="number" name="year_max" placeholder="Год до" value="{{ year_max }}">
+            <button type="submit">Применить фильтры</button>
+        </form>
+    </div>
+
+    {% if username %}
+    <div class="form-box">
+        <h2>Добавить объявление</h2>
+        <form action="/add" method="post" enctype="multipart/form-data">
+            <input type="text" name="title" placeholder="Название машины" required>
+            <input type="text" name="price" placeholder="Цена" required>
+            <input type="text" name="year" placeholder="Год выпуска" required>
+            <input type="text" name="city" placeholder="Город" required>
+            <input type="text" name="phone" placeholder="Телефон" required>
+            <input type="text" name="description" placeholder="Описание" required>
+            <input type="file" name="images" multiple required>
+            <button type="submit">Добавить объявление</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="form-box">
+        <h2>Чтобы добавить объявление, нужно войти в аккаунт</h2>
+        <a href="/login" class="edit-btn">Войти</a>
+        <a href="/register" class="edit-btn">Регистрация</a>
+    </div>
+    {% endif %}
+
+    {% if ads %}
+    <div class="ads-grid">
+        {% for ad in ads %}
+        <div class="card-wrapper">
+
+            <a href="/car/{{ ad.id }}" class="card-link">
+                <div class="card">
+                    {% if ad.first_image %}
+                        <img src="/static/images/{{ ad.first_image }}" alt="{{ ad.title }}">
+                    {% else %}
+                        <img src="/static/no-image.png" alt="{{ ad.title }}">
+                    {% endif %}
+
+                    <div class="card-content">
+                        <h3>{{ ad.title }}</h3>
+                        <div class="price">{{ ad.price }} ₸</div>
+
+                        {% if user_id %}
+                            <a href="/favorite/{{ ad.id }}" class="fav-btn">⭐ В избранное</a>
+                        {% endif %}
+
+                        <p>Год: {{ ad.year }}</p>
+                        <p>Город: {{ ad.city }}</p>
+                        <p>Автор: {{ ad.username }}</p>
+                    </div>
+                </div>
+            </a>
+
+            {% if user_id and ad.user_id == user_id %}
+            <div class="card-actions">
+                <a href="/edit/{{ ad.id }}" class="edit-btn">Редактировать</a>
+                <form action="/delete/{{ ad.id }}" method="post">
+                    <button type="submit" class="delete-btn">Удалить</button>
+                </form>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+        Объявлений пока нет
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

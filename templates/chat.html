@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чат</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <h1>transport.kz</h1>
+
+    <div>
+        <a href="/" class="edit-btn">Главная</a>
+        <a href="/my_ads" class="edit-btn">Мои объявления</a>
+        <a href="/favorites" class="edit-btn">Избранное</a>
+        <a href="/messages" class="edit-btn">Сообщения</a>
+        <a href="/profile/{{ current_user_id }}" class="edit-btn">Профиль</a>
+        <a href="/logout" class="edit-btn">Выйти</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="form-box">
+        <h2>Чат по объявлению: {{ ad.title }}</h2>
+        <p>Собеседник: <strong>{{ other_user.username }}</strong></p>
+    </div>
+
+    <div class="form-box chat-box" id="chat-box">
+        {% if messages %}
+            {% for msg in messages %}
+                {% if msg.sender_id == current_user_id %}
+                    <div class="message my-message">
+                        {{ msg.text }}
+                    </div>
+                {% else %}
+                    <div class="message other-message">
+                        <strong>{{ msg.sender_name }}:</strong><br>
+                        {{ msg.text }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="empty">Сообщений пока нет</div>
+        {% endif %}
+    </div>
+
+    <div class="form-box">
+        <form action="/send_message/{{ ad.id }}/{{ other_user.id }}" method="post">
+            <input type="text" name="text" placeholder="Напиши сообщение..." required>
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+const chatBox = document.getElementById("chat-box");
+chatBox.scrollTop = chatBox.scrollHeight;
+
+setInterval(() => {
+    window.location.reload();
+}, 2000);
+</script>
+
+</body>
+</html>

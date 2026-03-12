@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админ-панель</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <h1>transport.kz</h1>
+
+    <div>
+        <a href="/" class="edit-btn">Главная</a>
+        <a href="/admin" class="edit-btn">Админка</a>
+        <a href="/logout" class="edit-btn">Выйти</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="form-box">
+        <h2>Админ-панель</h2>
+        <p>Вы вошли как: <strong>{{ username }}</strong></p>
+    </div>
+
+    <div class="form-box">
+        <h2>Пользователи</h2>
+
+        {% if users %}
+            {% for user in users %}
+                <div class="chat-card">
+                    <h3 style="margin-top: 0;">{{ user.username }}</h3>
+                    <p>ID: {{ user.id }}</p>
+
+                    {% if user.username != "admin" %}
+                    <form action="/admin/delete_user/{{ user.id }}" method="post">
+                        <button type="submit" class="delete-btn">Удалить пользователя</button>
+                    </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">Пользователей нет</div>
+        {% endif %}
+    </div>
+
+    <div class="form-box">
+        <h2>Объявления</h2>
+
+        {% if ads %}
+            {% for ad in ads %}
+                <div class="chat-card">
+                    <h3 style="margin-top: 0;">{{ ad.title }}</h3>
+                    <p>Цена: {{ ad.price }} ₸</p>
+                    <p>Город: {{ ad.city }}</p>
+                    <p>Автор: {{ ad.username }}</p>
+                    <p>Просмотров: {{ ad.views }}</p>
+
+                    <form action="/admin/delete_ad/{{ ad.id }}" method="post">
+                        <button type="submit" class="delete-btn">Удалить объявление</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">Объявлений нет</div>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ ad.title }}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <h1>transport.kz</h1>
+
+    <div>
+        {% if username %}
+            <a href="/" class="edit-btn">Главная</a>
+            <a href="/my_ads" class="edit-btn">Мои объявления</a>
+            <a href="/favorites" class="edit-btn">Избранное</a>
+            <a href="/messages" class="edit-btn">Сообщения</a>
+            <a href="/profile/{{ current_user_id }}" class="edit-btn">Профиль</a>
+            <a href="/logout" class="edit-btn">Выйти</a>
+        {% else %}
+            <a href="/login" class="edit-btn">Войти</a>
+            <a href="/register" class="edit-btn">Регистрация</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    <div class="car-page">
+
+        <a href="/" class="back-link">← Назад</a>
+
+        {% if images and images|length > 0 %}
+            <img id="main-image" class="main-slider-image" src="/static/images/{{ images[0].filename }}" alt="{{ ad.title }}">
+            <div class="thumb-row">
+                {% for image in images %}
+                    <img
+                        class="thumb-image"
+                        src="/static/images/{{ image.filename }}"
+                        alt="{{ ad.title }}"
+                        onclick="changeMainImage('/static/images/{{ image.filename }}', this)"
+                    >
+                {% endfor %}
+            </div>
+        {% else %}
+            <img id="main-image" class="main-slider-image" src="/static/no-image.png" alt="{{ ad.title }}">
+        {% endif %}
+
+        <div class="car-title">{{ ad.title }}</div>
+        <div class="car-price">{{ ad.price }} ₸</div>
+
+        <p><strong>Просмотров:</strong> {{ ad.views }}</p>
+        <p><strong>Год:</strong> {{ ad.year }}</p>
+        <p><strong>Город:</strong> {{ ad.city }}</p>
+        <p><strong>Телефон:</strong> {{ ad.phone }}</p>
+        <p><strong>Описание:</strong> {{ ad.description }}</p>
+        <p><strong>Автор:</strong> {{ ad.username }}</p>
+
+        {% if current_user_id and current_user_id != ad.user_id %}
+            <a href="/chat/{{ ad.id }}/{{ ad.user_id }}" class="edit-btn">Написать продавцу</a>
+        {% endif %}
+
+        {% if is_owner %}
+        <div class="detail-actions">
+            <a href="/edit/{{ ad.id }}" class="edit-btn">Редактировать</a>
+            <form action="/delete/{{ ad.id }}" method="post">
+                <button type="submit" class="delete-btn">Удалить объявление</button>
+            </form>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+function changeMainImage(src, element) {
+    document.getElementById("main-image").src = src;
+    const thumbs = document.querySelectorAll(".thumb-image");
+    thumbs.forEach((thumb) => thumb.classList.remove("active-thumb"));
+    element.classList.add("active-thumb");
+}
+</script>
+
+</body>
+</html>
